@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#020617">
+  <meta name="description" content="AURA — modern apparel and everyday essentials.">
+  <title>AURA | Modern Apparel & Essentials</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ['Plus Jakarta Sans','sans-serif'] }, colors: { aura: { 500:'#3b82f6',600:'#2563eb' } } } } };
+  </script>
+  <style>
+    * { box-sizing:border-box }
+    html { scroll-behavior:smooth }
+    body { font-family:'Plus Jakarta Sans',sans-serif }
+    ::-webkit-scrollbar{width:8px} ::-webkit-scrollbar-track{background:#020617} ::-webkit-scrollbar-thumb{background:#334155;border-radius:8px}
+    .glass{background:rgba(2,6,23,.86);backdrop-filter:blur(16px)}
+    .product-image img{transition:transform .55s ease}
+    .product-card:hover .product-image img{transform:scale(1.06)}
+    .modal-backdrop{background:rgba(2,6,23,.82);backdrop-filter:blur(7px)}
+    .drawer{transition:transform .28s ease}
+    .toast{transition:all .25s ease}
+    button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #60a5fa;outline-offset:3px}
+    .size-option[aria-pressed="true"],.color-option[aria-pressed="true"]{border-color:#60a5fa;background:rgba(59,130,246,.16);color:#93c5fd}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+  </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100 antialiased">
+  <div class="bg-gradient-to-r from-blue-700 via-indigo-600 to-violet-700 px-4 py-2 text-center text-[11px] font-bold tracking-wide text-white sm:text-xs">
+    ✨ Complimentary express shipping on orders over $100 · Use code <span class="underline decoration-wavy">FREESHIP</span>
+  </div>
+
+  <header class="glass sticky top-0 z-40 border-b border-slate-800">
+    <div class="mx-auto flex h-[76px] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+      <a href="#" class="flex shrink-0 items-center gap-3" aria-label="AURA home">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-blue-600 text-xl font-extrabold shadow-lg shadow-blue-600/25">A</span>
+        <span class="text-xl font-extrabold tracking-[.16em]">AURA<span class="text-blue-500">.</span></span>
+      </a>
+      <nav class="hidden items-center gap-1 text-sm font-semibold md:flex">
+        <a class="rounded-lg px-4 py-2 text-slate-300 transition hover:bg-slate-800 hover:text-white" href="#t-shirts">T-Shirts</a>
+        <a class="rounded-lg px-4 py-2 text-slate-300 transition hover:bg-slate-800 hover:text-white" href="#pants">Pants</a>
+        <a class="rounded-lg px-4 py-2 text-slate-300 transition hover:bg-slate-800 hover:text-white" href="#new-arrivals">New Arrivals</a>
+      </nav>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <label class="relative hidden sm:block">
+          <span class="sr-only">Search products</span>
+          <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+          <input id="searchInput" type="search" placeholder="Search apparel..." class="w-44 rounded-full border border-slate-700 bg-slate-900 py-2.5 pl-9 pr-4 text-xs text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none md:w-60">
+        </label>
+        <button id="mobileSearchBtn" class="rounded-full border border-slate-700 bg-slate-900 p-2.5 text-slate-300 sm:hidden" aria-label="Search">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+        </button>
+        <button id="cartOpen" class="relative rounded-full border border-slate-700 bg-slate-900 p-2.5 text-slate-200 transition hover:border-blue-500 hover:text-blue-400" aria-label="Open shopping cart">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 2-1.6L22 7H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+          <span id="cartBadge" class="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full border-2 border-slate-950 bg-blue-600 px-1 text-[10px] font-extrabold">0</span>
+        </button>
+      </div>
+    </div>
+    <div id="mobileSearchWrap" class="hidden border-t border-slate-800 px-4 py-3 sm:hidden">
+      <input id="mobileSearchInput" type="search" placeholder="Search products..." class="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm focus:border-blue-500 focus:outline-none">
+    </div>
+  </header>
+
+  <main>
+    <section class="relative isolate overflow-hidden border-b border-slate-800/70 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950">
+      <div class="pointer-events-none absolute -left-24 top-0 h-80 w-80 rounded-full bg-blue-600/10 blur-3xl"></div>
+      <div class="pointer-events-none absolute -right-20 bottom-0 h-96 w-96 rounded-full bg-indigo-600/10 blur-3xl"></div>
+      <div class="relative mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 sm:py-28 lg:px-8">
+        <span class="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/25 bg-blue-500/10 px-4 py-2 text-[10px] font-bold uppercase tracking-[.18em] text-blue-300">✦ The 2026 Collection</span>
+        <h1 class="mx-auto max-w-4xl text-4xl font-extrabold leading-[1.12] tracking-tight text-white sm:text-6xl lg:text-7xl">Designed for comfort.<br><span class="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">Made to move.</span></h1>
+        <p class="mx-auto mt-6 max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">Considered essentials, premium fabrics and modern silhouettes. Build a wardrobe that feels as good as it looks.</p>
+        <div class="mt-9 flex flex-wrap justify-center gap-3">
+          <a href="#t-shirts" class="rounded-full bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-500">Shop T-Shirts <span aria-hidden="true">→</span></a>
+          <a href="#pants" class="rounded-full border border-slate-700 bg-slate-800/70 px-6 py-3 text-sm font-bold text-slate-200 transition hover:border-slate-500 hover:bg-slate-800">Explore Trousers</a>
+        </div>
+        <div class="mt-12 flex flex-wrap justify-center gap-x-8 gap-y-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+          <span>✓ Thoughtful materials</span><span>✓ Everyday comfort</span><span>✓ Timeless design</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div><p class="text-xs font-bold uppercase tracking-[.2em] text-blue-400">Find your fit</p><h2 class="mt-1 text-2xl font-extrabold">Shop the collection</h2></div>
+        <div class="flex flex-wrap items-center gap-2">
+          <div class="flex rounded-full border border-slate-800 bg-slate-900 p-1 text-xs">
+            <button class="filter-btn rounded-full bg-blue-600 px-4 py-2 font-bold text-white" data-filter="all">All</button>
+            <button class="filter-btn rounded-full px-4 py-2 font-semibold text-slate-400 hover:text-white" data-filter="t-shirts">T-Shirts</button>
+            <button class="filter-btn rounded-full px-4 py-2 font-semibold text-slate-400 hover:text-white" data-filter="pants">Pants</button>
+          </div>
+          <select id="sortSelect" aria-label="Sort products" class="rounded-full border border-slate-800 bg-slate-900 px-4 py-2.5 text-xs text-slate-300 focus:border-blue-500 focus:outline-none">
+            <option value="featured">Featured</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option><option value="name">Name: A–Z</option>
+          </select>
+        </div>
+      </div>
+      <div id="searchStatus" class="mt-6 hidden text-sm text-slate-400" aria-live="polite"></div>
+    </section>
+
+    <section id="t-shirts" class="scroll-mt-28 mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
+      <div class="mb-7 flex items-end justify-between border-b border-slate-800 pb-4">
+        <div><p class="text-xs font-bold uppercase tracking-[.2em] text-blue-400">Essential tops</p><h2 class="mt-1 text-3xl font-extrabold">Premium T-Shirts</h2></div>
+        <p class="hidden max-w-sm text-right text-xs leading-6 text-slate-500 sm:block">Premium everyday staples with a refined fit and feel.</p>
+      </div>
+      <div id="teeGrid" class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"></div>
+    </section>
+
+    <section id="pants" class="scroll-mt-28 mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
+      <div class="mb-7 flex items-end justify-between border-b border-slate-800 pb-4">
+        <div><p class="text-xs font-bold uppercase tracking-[.2em] text-indigo-400">Tailored bottoms</p><h2 class="mt-1 text-3xl font-extrabold">Pants & Trousers</h2></div>
+        <p class="hidden max-w-sm text-right text-xs leading-6 text-slate-500 sm:block">Versatile cuts for workdays, weekends and everywhere between.</p>
+      </div>
+      <div id="pantsGrid" class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"></div>
+    </section>
+    <p id="emptyResults" class="hidden mx-auto mb-16 max-w-7xl rounded-2xl border border-slate-800 bg-slate-900 p-10 text-center text-sm text-slate-400">No products match your search. Try another term.</p>
+
+    <section id="new-arrivals" class="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
+      <div class="overflow-hidden rounded-3xl border border-blue-500/20 bg-gradient-to-r from-blue-950 via-indigo-950/80 to-slate-900 p-8 sm:flex sm:items-center sm:justify-between sm:p-12">
+        <div class="max-w-xl"><p class="text-xs font-bold uppercase tracking-[.2em] text-blue-300">AURA inner circle</p><h2 class="mt-2 text-2xl font-extrabold sm:text-3xl">A little more AURA.</h2><p class="mt-3 text-sm leading-6 text-slate-300">Get collection updates, early access and 15% off your first order.</p></div>
+        <form id="newsletterForm" class="mt-6 flex w-full flex-col gap-2 sm:mt-0 sm:w-auto sm:flex-row">
+          <label class="sr-only" for="newsletterEmail">Email address</label>
+          <input id="newsletterEmail" type="email" required maxlength="254" placeholder="Your email address" class="min-w-0 rounded-xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-blue-400 focus:outline-none sm:w-64">
+          <button class="rounded-xl bg-white px-5 py-3 text-sm font-extrabold text-slate-950 transition hover:bg-blue-100">Join the club</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-800 bg-slate-900/70">
+    <div class="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-10 text-center sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:text-left lg:px-8">
+      <a href="#" class="flex items-center justify-center gap-2 font-extrabold tracking-widest text-white sm:justify-start"><span class="grid h-8 w-8 place-items-center rounded-lg bg-blue-600">A</span>AURA<span class="text-blue-500">.</span></a>
+      <p class="text-[11px] text-slate-500">© <span id="year"></span> AURA Apparel. Demo storefront.</p>
+      <div class="flex justify-center gap-5 text-[11px] text-slate-400"><a href="#privacy" class="hover:text-white">Privacy</a><a href="#terms" class="hover:text-white">Terms</a><a href="#newsletterForm" class="hover:text-white">Contact</a></div>
+    </div>
+  </footer>
+
+  <!-- Cart drawer -->
+  <div id="cartLayer" class="pointer-events-none fixed inset-0 z-50 invisible opacity-0 transition-opacity" aria-hidden="true">
+    <button id="cartBackdrop" class="modal-backdrop absolute inset-0 h-full w-full" aria-label="Close cart"></button>
+    <aside id="cartDrawer" role="dialog" aria-modal="true" aria-labelledby="cartTitle" class="drawer absolute right-0 top-0 flex h-full w-full max-w-md translate-x-full flex-col border-l border-slate-800 bg-slate-900 p-5 shadow-2xl sm:p-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-5"><div><p class="text-[10px] font-bold uppercase tracking-[.2em] text-blue-400">Your selection</p><h2 id="cartTitle" class="mt-1 text-xl font-extrabold">Shopping bag <span id="cartCountLabel" class="text-slate-500">(0)</span></h2></div><button id="cartClose" class="rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white" aria-label="Close cart">✕</button></div>
+      <div id="cartItems" class="flex-1 space-y-3 overflow-y-auto py-5"></div>
+      <div class="border-t border-slate-800 pt-5">
+        <div class="mb-2 flex justify-between text-sm text-slate-400"><span>Subtotal</span><span id="cartSubtotal" class="font-bold text-white">$0.00</span></div>
+        <div class="mb-4 flex justify-between text-xs text-slate-500"><span>Shipping</span><span id="cartShipping">Calculated at checkout</span></div>
+        <button id="checkoutOpen" class="w-full rounded-xl bg-blue-600 py-3.5 text-sm font-extrabold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-40">Continue to checkout</button>
+        <p class="mt-3 text-center text-[10px] leading-5 text-slate-500">Demo checkout only. No payment will be collected.</p>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Product modal -->
+  <div id="productLayer" class="invisible fixed inset-0 z-[60] grid place-items-center p-4 opacity-0 transition-opacity" aria-hidden="true">
+    <button class="modal-backdrop absolute inset-0 h-full w-full" data-close-product aria-label="Close product details"></button>
+    <section role="dialog" aria-modal="true" aria-labelledby="productModalTitle" class="relative z-10 grid max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-3xl border border-slate-800 bg-slate-900 shadow-2xl md:grid-cols-2">
+      <div class="relative min-h-64 bg-slate-800"><img id="modalImage" class="h-full min-h-64 w-full object-cover" alt=""></div>
+      <div class="p-6 sm:p-8">
+        <div class="flex items-start justify-between"><p id="modalCategory" class="text-[10px] font-bold uppercase tracking-[.2em] text-blue-400"></p><button data-close-product class="rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white" aria-label="Close">✕</button></div>
+        <h2 id="productModalTitle" class="mt-3 text-2xl font-extrabold"></h2><p id="modalRating" class="mt-2 text-xs text-amber-400"></p><p id="modalPrice" class="mt-4 text-2xl font-extrabold text-white"></p><p id="modalDescription" class="mt-3 text-sm leading-6 text-slate-400"></p>
+        <div class="mt-6"><p class="mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">Choose size</p><div id="sizeOptions" class="flex flex-wrap gap-2"></div></div>
+        <div class="mt-5"><p class="mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">Choose color</p><div id="colorOptions" class="flex flex-wrap gap-2"></div></div>
+        <div class="mt-6 flex gap-3"><button id="modalAdd" class="flex-1 rounded-xl bg-blue-600 py-3 text-sm font-extrabold text-white transition hover:bg-blue-500">Add to bag</button><button data-close-product class="rounded-xl border border-slate-700 px-4 text-sm font-bold text-slate-300 hover:bg-slate-800">Close</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Checkout modal -->
+  <div id="checkoutLayer" class="invisible fixed inset-0 z-[70] grid place-items-center p-4 opacity-0 transition-opacity" aria-hidden="true">
+    <button class="modal-backdrop absolute inset-0 h-full w-full" data-close-checkout aria-label="Close checkout"></button>
+    <section role="dialog" aria-modal="true" aria-labelledby="checkoutTitle" class="relative z-10 max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-3xl border border-slate-800 bg-slate-900 p-6 shadow-2xl sm:p-8">
+      <div class="flex items-start justify-between"><div><p class="text-[10px] font-bold uppercase tracking-[.2em] text-blue-400">Almost yours</p><h2 id="checkoutTitle" class="mt-1 text-2xl font-extrabold">Delivery details</h2><p class="mt-2 text-xs text-slate-400">This demo saves the order in this browser only.</p></div><button data-close-checkout class="rounded-lg p-2 text-slate-400 hover:bg-slate-800" aria-label="Close">✕</button></div>
+      <form id="checkoutForm" class="mt-6 space-y-4">
+        <div class="grid gap-4 sm:grid-cols-2"><label class="text-xs font-semibold text-slate-300">First name<input name="firstName" required autocomplete="given-name" maxlength="60" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-3 text-sm text-white focus:border-blue-500 focus:outline-none"></label><label class="text-xs font-semibold text-slate-300">Last name<input name="lastName" required autocomplete="family-name" maxlength="60" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-3 text-sm text-white focus:border-blue-500 focus:outline-none"></label></div>
+        <label class="block text-xs font-semibold text-slate-300">Email address<input name="email" type="email" required autocomplete="email" maxlength="254" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-3 text-sm text-white focus:border-blue-500 focus:outline-none"></label>
+        <label class="block text-xs font-semibold text-slate-300">Phone number<input name="phone" type="tel" required autocomplete="tel" maxlength="30" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-3 text-sm text-white focus:border-blue-500 focus:outline-none"></label>
+        <label class="block text-xs font-semibold text-slate-300">Delivery address<input name="address" required autocomplete="street-address" maxlength="180" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-3 text-sm text-white focus:border-blue-500 focus:outline-none"></label>
+        <div class="grid gap-4 sm:grid-cols-2"><label class="text-xs font-semibold text-slate-300">City<input name="city" required autocomplete="address-level2" maxlength="80" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-3 text-sm text-white focus:border-blue-500 focus:outline-none"></label><label class="text-xs font-semibold text-slate-300">Postal code<input name="postal" required autocomplete="postal-code" maxlength="20" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-3 text-sm text-white focus:border-blue-500 focus:outline-none"></label></div>
+        <div class="rounded-xl border border-slate-800 bg-slate-950 p-4"><div class="flex justify-between text-xs text-slate-400"><span>Subtotal</span><span id="checkoutSubtotal" class="text-white"></span></div><div class="mt-2 flex justify-between text-xs text-slate-400"><span>Shipping</span><span id="checkoutShipping" class="text-white"></span></div><div class="mt-3 flex justify-between border-t border-slate-800 pt-3 text-sm font-extrabold"><span>Total</span><span id="checkoutTotal" class="text-blue-400"></span></div></div>
+        <button class="w-full rounded-xl bg-blue-600 py-3.5 text-sm font-extrabold text-white transition hover:bg-blue-500">Place demo order</button>
+      </form>
+    </section>
+  </div>
+
+  <!-- Confirmation modal -->
+  <div id="confirmationLayer" class="invisible fixed inset-0 z-[80] grid place-items-center p-4 opacity-0 transition-opacity" aria-hidden="true">
+    <div class="modal-backdrop absolute inset-0"></div>
+    <section role="dialog" aria-modal="true" aria-labelledby="confirmationTitle" class="relative z-10 w-full max-w-md rounded-3xl border border-slate-800 bg-slate-900 p-8 text-center shadow-2xl">
+      <div class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-emerald-500/15 text-2xl text-emerald-400">✓</div><h2 id="confirmationTitle" class="mt-5 text-2xl font-extrabold">Order saved!</h2><p id="confirmationText" class="mt-3 text-sm leading-6 text-slate-400"></p><p class="mt-4 text-xs text-amber-300">Demo confirmation — no payment was processed and no shipment was created.</p><button id="confirmationClose" class="mt-7 w-full rounded-xl bg-blue-600 py-3 text-sm font-extrabold text-white hover:bg-blue-500">Continue shopping</button>
+    </section>
+  </div>
+
+  <div id="toast" class="toast pointer-events-none fixed bottom-5 left-1/2 z-[100] -translate-x-1/2 translate-y-4 rounded-xl border border-slate-700 bg-slate-900 px-5 py-3 text-xs font-bold text-white opacity-0 shadow-2xl" role="status" aria-live="polite"></div>
+
+  <script>
+    'use strict';
+
+    const PRODUCTS = [
+      {id:'tee-01',name:'Essential Heavyweight Tee',category:'t-shirts',price:38,tag:'Bestseller',material:'Organic cotton',rating:'4.9 (128)',description:'A relaxed boxy fit in substantial cotton, finished with a reinforced ribbed collar and pre-shrunk fabric.',image:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=900&q=85',colors:['Black','White','Stone'],sizes:['S','M','L','XL']},
+      {id:'tee-02',name:'Aura Graphic Signature Tee',category:'t-shirts',price:45,tag:'Limited edition',material:'Soft cotton',rating:'4.8 (84)',description:'A clean graphic statement on a soft, vintage-inspired cotton base. Designed for everyday rotation.',image:'https://images.unsplash.com/photo-150 camiseta?auto=format&fit=crop&w=900&q=85'.replace('150 camiseta','1503341504253-dff4815485f1'),colors:['Black','White'],sizes:['S','M','L','XL']},
+      {id:'tee-03',name:'Minimalist Breton Striped Tee',category:'t-shirts',price:42,tag:'Everyday essential',material:'Yarn-dyed cotton',rating:'4.7 (56)',description:'Timeless stripes with a comfortable, easy silhouette and color designed to last.',image:'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=900&q=85',colors:['Navy','White','Sage'],sizes:['S','M','L','XL']},
+      {id:'tee-04',name:'Oversized Mock-Neck Tee',category:'t-shirts',price:40,tag:'New',material:'Premium jersey',rating:'5.0 (19)',description:'An architectural high-neck shape with dropped shoulders and a modern oversized profile.',image:'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=900&q=85',colors:['Black','Cream'],sizes:['S','M','L','XL']},
+      {id:'pant-01',name:'Raw Tapered Selvedge Denim',category:'pants',price:88,tag:'Popular',material:'Japanese denim',rating:'4.9 (210)',description:'A tapered silhouette in durable raw indigo denim that softens and characterizes with wear.',image:'https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=900&q=85',colors:['Indigo','Black'],sizes:['28','30','32','34','36']},
+      {id:'pant-02',name:'Tailored Stretch Chinos',category:'pants',price:68,tag:'Smart casual',material:'Stretch twill',rating:'4.8 (95)',description:'Versatile tailored trousers with comfortable stretch, made for workdays and weekends.',image:'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?auto=format&fit=crop&w=900&q=85',colors:['Khaki','Black','Navy'],sizes:['28','30','32','34','36']},
+      {id:'pant-03',name:'Utility Modular Cargo Trousers',category:'pants',price:78,tag:'Utility line',material:'Tech ripstop',rating:'4.6 (73)',description:'A durable utility weave with practical cargo pockets and adjustable ankle details.',image:'https://images.unsplash.com/photo-1517438476312-10d79c077509?auto=format&fit=crop&w=900&q=85',colors:['Olive','Black'],sizes:['28','30','32','34','36']},
+      {id:'pant-04',name:'Minimal Fleece Joggers',category:'pants',price:54,tag:'Comfort pick',material:'French terry',rating:'4.9 (142)',description:'Soft heavyweight fleece with tapered cuffs and a comfortable adjustable waistband.',image:'https://images.unsplash.com/photo-1552902865-b72c031ac5ea?auto=format&fit=crop&w=900&q=85',colors:['Grey','Black','Navy'],sizes:['S','M','L','XL']}
+    ];
+
+    const STORAGE = {cart:'aura_cart_v1',orders:'aura_orders_v1',subscribers:'aura_subscribers_v1'};
+    const money = n => '$' + Number(n).toFixed(2);
+    const safeRead = (key, fallback) => { try { const value=JSON.parse(localStorage.getItem(key)); return value ?? fallback; } catch { return fallback; } };
+    const safeWrite = (key, value) => { try { localStorage.setItem(key,JSON.stringify(value)); return true; } catch { toast('Could not save in this browser. Storage may be disabled.'); return false; } };
+
+    let cart = safeRead(STORAGE.cart, []);
+    if (!Array.isArray(cart)) cart=[];
+    cart = cart.filter(row => PRODUCTS.some(p=>p.id===row.id) && Number.isInteger(row.quantity) && row.quantity>0 && row.quantity<100);
+    let activeFilter='all', searchTerm='', selectedProduct=null, selectedSize='', selectedColor='';
+    let toastTimer;
+
+    const $ = id => document.getElementById(id);
+    const escapeHTML = value => String(value).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    function toast(message){const el=$('toast');el.textContent=message;el.classList.remove('translate-y-4','opacity-0');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.add('translate-y-4','opacity-0'),2600);}
+    function persistCart(){safeWrite(STORAGE.cart,cart);}
+    function visibleProducts(){
+      let list=PRODUCTS.filter(p=>(activeFilter==='all'||p.category===activeFilter)&&(`${p.name} ${p.material} ${p.description} ${p.category}`).toLowerCase().includes(searchTerm));
+      const sort=$('sortSelect').value;
+      if(sort==='price-low')list.sort((a,b)=>a.price-b.price);
+      if(sort==='price-high')list.sort((a,b)=>b.price-a.price);
+      if(sort==='name')list.sort((a,b)=>a.name.localeCompare(b.name));
+      return list;
+    }
+    function productCard(p){
+      return `<article class="product-card group flex flex-col overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 transition duration-300 hover:-translate-y-1 hover:border-slate-700 hover:shadow-2xl hover:shadow-blue-950/30">
+        <button class="product-image relative aspect-square overflow-hidden bg-slate-800 text-left" data-view="${p.id}" aria-label="View ${escapeHTML(p.name)}">
+          <img src="${p.image}" alt="${escapeHTML(p.name)}" loading="lazy" class="h-full w-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/700x700/1e293b/e2e8f0?text=AURA+Apparel'">
+          <span class="absolute left-3 top-3 rounded-full bg-slate-950/85 px-3 py-1 text-[9px] font-extrabold uppercase tracking-wider text-blue-300">${escapeHTML(p.tag)}</span>
+          <span class="absolute bottom-3 right-3 rounded-full bg-slate-950/80 px-3 py-1.5 text-[10px] font-bold text-white opacity-0 transition group-hover:opacity-100">Quick view ↗</span>
+        </button>
+        <div class="flex flex-1 flex-col p-4">
+          <div class="mb-2 flex items-center justify-between gap-2 text-[10px] text-slate-500"><span>${escapeHTML(p.material)}</span><span class="shrink-0 text-amber-400">★ ${escapeHTML(p.rating)}</span></div>
+          <button data-view="${p.id}" class="text-left text-sm font-extrabold text-white transition hover:text-blue-400">${escapeHTML(p.name)}</button>
+          <p class="mt-2 line-clamp-2 text-[11px] leading-5 text-slate-500">${escapeHTML(p.description)}</p>
+          <div class="mt-auto flex items-center justify-between pt-5"><span class="text-lg font-extrabold">${money(p.price)}</span><button data-view="${p.id}" class="rounded-lg bg-blue-600 px-4 py-2 text-[11px] font-extrabold text-white transition hover:bg-blue-500">Choose options</button></div>
+        </div>
+      </article>`;
+    }
+    function renderProducts(){
+      const list=visibleProducts(), tees=list.filter(p=>p.category==='t-shirts'), pants=list.filter(p=>p.category==='pants');
+      $('teeGrid').innerHTML=tees.map(productCard).join('');
+      $('pantsGrid').innerHTML=pants.map(productCard).join('');
+      $('t-shirts').classList.toggle('hidden',activeFilter==='pants'||(searchTerm!==''&&tees.length===0));
+      $('pants').classList.toggle('hidden',activeFilter==='t-shirts'||(searchTerm!==''&&pants.length===0));
+      $('emptyResults').classList.toggle('hidden',list.length!==0);
+      $('searchStatus').classList.toggle('hidden',!searchTerm);
+      $('searchStatus').textContent=`${list.length} product${list.length===1?'':'s'} found for “${searchTerm}”.`;
+      document.querySelectorAll('.filter-btn').forEach(btn=>{const active=btn.dataset.filter===activeFilter;btn.classList.toggle('bg-blue-600',active);btn.classList.toggle('text-white',active);btn.classList.toggle('text-slate-400',!active);});
+    }
+    function openProduct(id){
+      const p=PRODUCTS.find(x=>x.id===id);if(!p)return;
+      selectedProduct=p;selectedSize=p.sizes[0];selectedColor=p.colors[0];
+      $('modalImage').src=p.image;$('modalImage').alt=p.name;$('modalCategory').textContent=p.category==='pants'?'Tailored bottoms':'Essential tops';
+      $('productModalTitle').textContent=p.name;$('modalRating').textContent='★ '+p.rating;$('modalPrice').textContent=money(p.price);$('modalDescription').textContent=p.description;
+      $('sizeOptions').innerHTML=p.sizes.map(s=>`<button type="button" class="size-option rounded-lg border border-slate-700 px-4 py-2 text-xs font-bold text-slate-300" data-size="${escapeHTML(s)}" aria-pressed="${s===selectedSize}">${escapeHTML(s)}</button>`).join('');
+      $('colorOptions').innerHTML=p.colors.map(c=>`<button type="button" class="color-option rounded-lg border border-slate-700 px-3 py-2 text-xs font-bold text-slate-300" data-color="${escapeHTML(c)}" aria-pressed="${c===selectedColor}">${escapeHTML(c)}</button>`).join('');
+      showLayer('productLayer');$('modalAdd').focus();
+    }
+    function showLayer(id){const el=$(id);el.classList.remove('invisible','opacity-0');el.setAttribute('aria-hidden','false');document.body.classList.add('overflow-hidden');}
+    function hideLayer(id){const el=$(id);el.classList.add('opacity-0');el.setAttribute('aria-hidden','true');setTimeout(()=>{el.classList.add('invisible');if(!['cartLayer','productLayer','checkoutLayer','confirmationLayer'].some(x=>!$(x).classList.contains('invisible')))document.body.classList.remove('overflow-hidden');},220);}
+    function addToCart(id,size,color){
+      const p=PRODUCTS.find(x=>x.id===id);if(!p)return;
+      const key=[id,size,color].join('|');const existing=cart.find(x=>x.key===key);
+      if(existing){if(existing.quantity>=10){toast('Maximum 10 of this variant per order.');return;}existing.quantity++;}
+      else cart.push({key,id,size,color,quantity:1});
+      persistCart();renderCart();toast(`${p.name} added to your bag.`);
+    }
+    function cartTotals(){const subtotal=cart.reduce((sum,row)=>{const p=PRODUCTS.find(x=>x.id===row.id);return sum+(p?p.price*row.quantity:0);},0);const shipping=subtotal===0||subtotal>=100?0:8;return{subtotal,shipping,total:subtotal+shipping,count:cart.reduce((n,x)=>n+x.quantity,0)};}
+    function renderCart(){
+      const t=cartTotals();$('cartBadge').textContent=t.count;$('cartCountLabel').textContent=`(${t.count})`;$('cartSubtotal').textContent=money(t.subtotal);$('cartShipping').textContent=t.subtotal===0?'—':t.shipping===0?'Free':money(t.shipping);
+      $('cartItems').innerHTML=cart.length?cart.map(row=>{const p=PRODUCTS.find(x=>x.id===row.id);if(!p)return '';return `<div class="flex gap-3 rounded-xl border border-slate-800 bg-slate-950/60 p-3"><img src="${p.image}" alt="" class="h-20 w-16 rounded-lg object-cover"><div class="min-w-0 flex-1"><p class="text-xs font-extrabold text-white">${escapeHTML(p.name)}</p><p class="mt-1 text-[10px] text-slate-500">${escapeHTML(row.color)} · Size ${escapeHTML(row.size)}</p><p class="mt-2 text-xs font-bold text-blue-400">${money(p.price)}</p><div class="mt-2 flex items-center gap-2"><button data-qty="${escapeHTML(row.key)}" data-delta="-1" class="grid h-6 w-6 place-items-center rounded-md border border-slate-700 text-slate-300 hover:bg-slate-800" aria-label="Decrease quantity">−</button><span class="min-w-4 text-center text-xs">${row.quantity}</span><button data-qty="${escapeHTML(row.key)}" data-delta="1" class="grid h-6 w-6 place-items-center rounded-md border border-slate-700 text-slate-300 hover:bg-slate-800" aria-label="Increase quantity">+</button><button data-remove="${escapeHTML(row.key)}" class="ml-auto text-[10px] font-bold text-rose-400 hover:text-rose-300">Remove</button></div></div><p class="text-xs font-extrabold">${money(p.price*row.quantity)}</p></div>`;}).join(''):'<div class="py-16 text-center"><div class="text-4xl text-slate-700">♧</div><p class="mt-4 text-sm font-bold text-slate-300">Your bag is empty</p><p class="mt-2 text-xs text-slate-500">Find something you love in the collection.</p></div>';
+      $('checkoutOpen').disabled=t.count===0;
+    }
+    function openCart(){showLayer('cartLayer');$('cartLayer').classList.remove('pointer-events-none');$('cartDrawer').classList.remove('translate-x-full');$('cartBackdrop').focus();}
+    function closeCart(){ $('cartDrawer').classList.add('translate-x-full');hideLayer('cartLayer');setTimeout(()=>$('cartLayer').classList.add('pointer-events-none'),230);}
+    function openCheckout(){
+      if(!cart.length){toast('Your bag is empty.');return;}
+      const t=cartTotals();$('checkoutSubtotal').textContent=money(t.subtotal);$('checkoutShipping').textContent=t.shipping===0?'Free':money(t.shipping);$('checkoutTotal').textContent=money(t.total);
+      closeCart();showLayer('checkoutLayer');
+    }
+    function submitOrder(event){
+      event.preventDefault();if(!cart.length){toast('Your bag is empty.');hideLayer('checkoutLayer');return;}
+      const form=new FormData(event.currentTarget);const customer=Object.fromEntries(form.entries());
+      const t=cartTotals();const order={reference:'AURA-'+Date.now().toString(36).toUpperCase(),createdAt:new Date().toISOString(),customer,items:cart.map(row=>({...row})),subtotal:t.subtotal,shipping:t.shipping,total:t.total,status:'Demo order — unpaid'};
+      const orders=safeRead(STORAGE.orders,[]);orders.push(order);safeWrite(STORAGE.orders,orders);
+      cart=[];persistCart();renderCart();event.currentTarget.reset();hideLayer('checkoutLayer');
+      $('confirmationText').textContent=`Your demo order ${order.reference} has been saved in this browser. Order total: ${money(order.total)}.`;
+      setTimeout(()=>showLayer('confirmationLayer'),240);
+    }
+    function closeAll(){['productLayer','checkoutLayer','confirmationLayer'].forEach(id=>{if(!$(id).classList.contains('invisible'))hideLayer(id);});if(!$('cartLayer').classList.contains('invisible'))closeCart();}
+    document.addEventListener('click',event=>{
+      const view=event.target.closest('[data-view]');if(view){openProduct(view.dataset.view);return;}
+      const size=event.target.closest('[data-size]');if(size){selectedSize=size.dataset.size;$('sizeOptions').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===size)));return;}
+      const color=event.target.closest('[data-color]');if(color){selectedColor=color.dataset.color;$('colorOptions').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===color)));return;}
+      const qty=event.target.closest('[data-qty]');if(qty){const row=cart.find(x=>x.key===qty.dataset.qty);if(row){row.quantity+=Number(qty.dataset.delta);if(row.quantity<=0)cart=cart.filter(x=>x!==row);else if(row.quantity>10)row.quantity=10;persistCart();renderCart();}return;}
+      const remove=event.target.closest('[data-remove]');if(remove){cart=cart.filter(x=>x.key!==remove.dataset.remove);persistCart();renderCart();toast('Item removed.');return;}
+      if(event.target.closest('[data-close-product]'))hideLayer('productLayer');
+      if(event.target.closest('[data-close-checkout]'))hideLayer('checkoutLayer');
+    });
+    $('modalAdd').addEventListener('click',()=>{if(selectedProduct){addToCart(selectedProduct.id,selectedSize,selectedColor);hideLayer('productLayer');}});
+    $('cartOpen').addEventListener('click',openCart);$('cartClose').addEventListener('click',closeCart);$('cartBackdrop').addEventListener('click',closeCart);$('checkoutOpen').addEventListener('click',openCheckout);$('checkoutForm').addEventListener('submit',submitOrder);
+    $('confirmationClose').addEventListener('click',()=>hideLayer('confirmationLayer'));
+    $('sortSelect').addEventListener('change',renderProducts);
+    document.querySelectorAll('.filter-btn').forEach(btn=>btn.addEventListener('click',()=>{activeFilter=btn.dataset.filter;renderProducts();}));
+    function setSearch(value){searchTerm=value.trim().toLowerCase();renderProducts();}
+    $('searchInput').addEventListener('input',e=>setSearch(e.target.value));
+    $('mobileSearchBtn').addEventListener('click',()=>{$('mobileSearchWrap').classList.toggle('hidden');if(!$('mobileSearchWrap').classList.contains('hidden'))$('mobileSearchInput').focus();});
+    $('mobileSearchInput').addEventListener('input',e=>{setSearch(e.target.value);$('searchInput').value=e.target.value;});
+    $('newsletterForm').addEventListener('submit',e=>{e.preventDefault();const email=$('newsletterEmail').value.trim().toLowerCase();if(!email||!$('newsletterEmail').checkValidity()){toast('Enter a valid email address.');return;}const list=safeRead(STORAGE.subscribers,[]);if(list.includes(email)){toast('This email is already subscribed.');return;}list.push(email);safeWrite(STORAGE.subscribers,list);e.currentTarget.reset();toast('Thanks for joining the AURA inner circle!');});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAll();});
+    $('year').textContent=new Date().getFullYear();
+    renderProducts();renderCart();
+  </script>
+  <!-- Misma AI assistant widget -->
+  <script defer src="https://misma.onrender.com/assets/misma-widget.js?v=20261107-widget-voice" data-site-key="7b38ce9a-b4a4-49f2-8b82-e073b8d879eb" data-endpoint="https://grlrrmebnthxguluybgb.supabase.co/functions/v1/misma-widget"></script>
+</body>
+</html>
